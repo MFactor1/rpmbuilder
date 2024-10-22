@@ -5,8 +5,9 @@ NAME=`basename $SRC_DIR`
 BLD_DIR=/home/$USER/rpmbuild
 LICENSE_DIR=$SRC_DIR/LICENSE
 VERSION_DIR=$SRC_DIR/VERSION
-BIN_SRC_DIR=$SRC_DIR/build
+BIN_SRC_DIR=$SRC_DIR/build/src
 SPEC_DIR=$SRC_DIR/pkg/rpm
+OUTPUT_DIR=$SRC_DIR/build/rpm
 
 VERSION=`cat $VERSION_DIR`
 
@@ -21,6 +22,12 @@ mkdir $BLD_DIR/SRPMS
 
 mkdir $BLD_DIR/SOURCES/$NAME-$VERSION
 
+$SRC_DIR/compile
+
+if [ ! -d $OUTPUT_DIR ]; then
+	mkdir $OUTPUT_DIR
+fi
+
 cp $BIN_SRC_DIR/* $BLD_DIR/SOURCES/$NAME-$VERSION/
 cp $LICENSE_DIR $BLD_DIR/SOURCES/$NAME-$VERSION/
 cp $VERSION_DIR $BLD_DIR/SOURCES/$NAME-$VERSION/
@@ -31,6 +38,6 @@ cp $SPEC_DIR/$NAME.spec $BLD_DIR/SPECS/
 
 rpmbuild -bb $BLD_DIR/SPECS/git-auto-commiter.spec
 
-cp -rTv $BLD_DIR/RPMS/ $SPEC_DIR/
+cp -rTv $BLD_DIR/RPMS/* $OUTPUT_DIR/
 
 rm -rf $BLD_DIR
